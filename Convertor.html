@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Volume/User Calculator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .calculator {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+            font-size: 16px;
+        }
+        
+        input[type="number"], input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="number"]:focus, input[type="text"]:focus {
+            border-color: #667eea;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .result-group {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .result-label {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .result-value {
+            font-size: 18px;
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        .calculate-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 20px;
+        }
+        
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .calculate-btn:active {
+            transform: translateY(0);
+        }
+        
+        .error-message {
+            background-color: #fee;
+            color: #c33;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #c33;
+            display: none;
+        }
+        
+        .success {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <h1>Volume/User Calculator</h1>
+        
+        <div class="input-group">
+            <label for="volume">Volume:</label>
+            <input type="number" id="volume" step="any" placeholder="Enter volume value">
+        </div>
+        
+        <div class="input-group">
+            <label for="user">User:</label>
+            <input type="number" id="user" step="any" placeholder="Enter user value">
+        </div>
+        
+        <div class="input-group">
+            <label for="single_iteration_display">Single Iteration:</label>
+            <input type="text" id="single_iteration_display" readonly placeholder="Result will appear here" style="background-color: #f8f9fa; cursor: not-allowed;">
+        </div>
+        
+        <div class="input-group">
+            <label for="pacing_display">Pacing:</label>
+            <input type="text" id="pacing_display" readonly placeholder="Result will appear here" style="background-color: #f8f9fa; cursor: not-allowed;">
+        </div>
+
+        <button class="calculate-btn" onclick="calculate()">Calculate</button>
+        
+        <div id="error" class="error-message"></div>
+    </div>
+
+    <script>
+        function calculate() {
+            const volumeInput = document.getElementById('volume');
+            const userInput = document.getElementById('user');
+            const singleIterationDisplay = document.getElementById('single_iteration_display');
+            const pacingDisplay = document.getElementById('pacing_display');
+            const errorDiv = document.getElementById('error');
+            
+            // Clear previous error
+            errorDiv.style.display = 'none';
+            
+            try {
+                const volume = parseFloat(volumeInput.value);
+                const user = parseFloat(userInput.value);
+                
+                // Validate inputs
+                if (isNaN(volume) || isNaN(user)) {
+                    throw new Error("Please enter valid numeric values.");
+                }
+                
+                if (user === 0) {
+                    throw new Error("User cannot be zero.");
+                }
+                
+                // Calculate results (same logic as your Tkinter code)
+                const singleIteration = volume / user;
+                const pacing = 3600 / singleIteration;
+                
+                // Display results with 2 decimal places
+                singleIterationDisplay.value = singleIteration.toFixed(2);
+                pacingDisplay.value = pacing.toFixed(2);
+                
+            } catch (error) {
+                // Show error message (like messagebox in Tkinter)
+                errorDiv.textContent = error.message;
+                errorDiv.style.display = 'block';
+                
+                // Clear output fields
+                singleIterationDisplay.value = '';
+                pacingDisplay.value = '';
+            }
+        }
+        
+        // Allow Enter key to trigger calculation
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                calculate();
+            }
+        });
+        
+        // Clear animation class after it completes
+        document.getElementById('results').addEventListener('animationend', function() {
+            this.classList.remove('success');
+        });
+    </script>
+</body>
+</html>
